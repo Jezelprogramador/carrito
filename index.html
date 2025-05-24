@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controlador Web v2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Controlador Web (Desde Cero)</h1>
+
+        <div class="controls">
+            <button class="control-button" data-command="avanzar">Avanzar</button>
+            <button class="control-button" data-command="detener">Detener</button>
+            <button class="control-button" data-command="retroceder">Retroceder</button>
+            <button class="control-button" data-command="girarIzquierda">Girar Izquierda</button>
+            <button class="control-button" data-command="girarDerecha">Girar Derecha</button>
+        </div>
+
+        <div class="voice-control">
+            <button id="btnStartListen">🎤 Empezar a Escuchar</button>
+            <p>Estado: <span id="status">Inactivo</span></p>
+            <p>Detectado: <em id="detected_text">---</em></p>
+        </div>
+
+        <div class="response-area">
+            <h2>Respuesta del Sistema:</h2>
+            <p id="system_response">---</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
