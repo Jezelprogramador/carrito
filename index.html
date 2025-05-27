@@ -3,19 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controlador Web v2</title>
+    <title>Controlador Web v2 - Con Giros por Grados</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Controlador Web Carrito</h1>
+        <h1>Controlador Web (Desde Cero)</h1>
 
+        <h2>Comandos Directos:</h2>
         <div class="controls">
             <button class="control-button" data-command="avanzar">Avanzar</button>
             <button class="control-button" data-command="detener">Detener</button>
             <button class="control-button" data-command="retroceder">Retroceder</button>
-            <button class="control-button" data-command="girarIzquierda">Girar Izquierda</button>
-            <button class="control-button" data-command="girarDerecha">Girar Derecha</button>
+        </div>
+        
+        <h3>Giros Continuos:</h3>
+        <div class="controls">
+            <button class="control-button" data-command="girarizquierda">Girar Izquierda (Cont.)</button>
+            <button class="control-button" data-command="girarderecha">Girar Derecha (Cont.)</button>
+        </div>
+
+        <h3>Giros por Grados (Aproximados):</h3>
+        <div class="controls">
+            <button class="control-button" data-command="girar_izquierda_90">Girar Izq. 90°</button>
+            <button class="control-button" data-command="girar_derecha_90">Girar Der. 90°</button>
+        </div>
+        <div class="controls">
+            <button class="control-button" data-command="girar_izquierda_360">Girar Izq. 360°</button>
+            <button class="control-button" data-command="girar_derecha_360">Girar Der. 360°</button>
         </div>
 
         <div class="voice-control">
@@ -30,6 +45,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script> 
+    <script src="script.js"></script>
 </body>
 </html>
