@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendCommandToBackend(dataValue, type) {
         // ★★★ URL DEL BACKEND ACTUALIZADA CON TU IP PÚBLICA DE EC2 ★★★
-        const backendUrl = 'https://50.16.160.48/carrito1/command.php'; 
+        const backendUrl = 'https://54.163.18.141/carrito1/command.php'; 
         
         const formData = new FormData();
         let consoleIdent = "- v4_continuous_public_ip_updated";
