@@ -13,7 +13,12 @@ if (!$conn->set_charset("utf8mb4")) {
     error_log("get_car_action.php - Error charset: " . $conn->error);
 }
 
-$car_executable_commands = ['avanzar', 'detener', 'retroceder', 'girarizquierda', 'girarderecha'];
+$car_executable_commands = [
+    'avanzar', 'detener', 'retroceder', 
+    'girarizquierda', 'girarderecha', // Giros continuos base
+    'girar_derecha_90', 'girar_izquierda_90',
+    'girar_derecha_360', 'girar_izquierda_360'
+];
 $car_executable_commands_sql_in = "'" . implode("','", $car_executable_commands) . "'";
 $sql = "SELECT name FROM iot_devices 
         WHERE name IN ($car_executable_commands_sql_in)
@@ -28,7 +33,6 @@ if ($result = $conn->query($sql)) {
     $result->free();
 } else {
     error_log("get_car_action.php - DB Query Error: " . $conn->error);
-    // No es necesario cerrar $conn aquí si va a cerrarse después
 }
 
 if ($conn) $conn->close();
