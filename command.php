@@ -1,5 +1,6 @@
 <?php
-// command.php (Versión completa final)
+// command.php
+// Versión completa final con CORS, giros por grados, depuración y lógica actualizada.
 
 // --- INICIO DE CONFIGURACIÓN CORS ---
 $allowed_origin = 'https://jezelprogramador.github.io';
@@ -16,14 +17,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 header('Content-Type: application/json');
 require_once 'config.php';
 
-$valid_executable_actions = ["avanzar", "detener", "retroceder", "girarizquierda", "girarderecha", "salir", "girar_derecha_90", "girar_izquierda_90", "girar_derecha_360", "girar_izquierda_360"];
+$valid_executable_actions = [
+    "avanzar", "detener", "retroceder", 
+    "girarizquierda", "girarderecha", 
+    "salir",
+    "girar_derecha_90", "girar_izquierda_90",
+    "girar_derecha_360", "girar_izquierda_360",
+    "avanzar_derecha", "avanzar_izquierda",
+    "retroceder_derecha", "retroceder_izquierda"
+];
+
 $simple_status_responses = [
-    "avanzar" => "Avanzando...", "detener" => "Detenido.", "retroceder" => "Retrocediendo...",
-    "girarizquierda" => "Girando a la izquierda (continuo)...", "girarderecha" => "Girando a la derecha (continuo)...",
-    "salir" => "Aplicación en pausa.", "girar_derecha_90" => "Girando 90° derecha...", "girar_izquierda_90" => "Girando 90° izquierda...",
-    "girar_derecha_360" => "Girando 360° derecha...", "girar_izquierda_360" => "Girando 360° izquierda...",
-    "keyword_missing" => "Di 'Alexa' primero.", "unknown_command" => "Comando no reconocido.",
-    "chatgpt_error" => "Error con IA.", "none" => "No se identificó comando.", "internal_error" => "Error interno."
+    "avanzar"         => "Avanzando...", "detener"         => "Detenido.", "retroceder"      => "Retrocediendo...",
+    "girarizquierda"  => "Girando a la izquierda (continuo)...", "girarderecha"    => "Girando a la derecha (continuo)...",
+    "salir"           => "Aplicación en pausa.", 
+    "girar_derecha_90"  => "Girando 90° derecha...", "girar_izquierda_90" => "Girando 90° izquierda...",
+    "girar_derecha_360" => "Girando 360° derecha...", "girar_izquierda_360"=> "Girando 360° izquierda...",
+    "avanzar_derecha"   => "Avanzando hacia la derecha...", "avanzar_izquierda"  => "Avanzando hacia la izquierda...",
+    "retroceder_derecha" => "Retrocediendo hacia la derecha...", "retroceder_izquierda"=> "Retrocediendo hacia la izquierda...",
+    "keyword_missing" => "Por favor, di 'Alexa' primero.", "unknown_command" => "Comando no reconocido.",
+    "chatgpt_error"   => "Error con IA.", "none"            => "No se identificó comando.", "internal_error"  => "Error interno."
 ];
 
 $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
@@ -39,12 +52,16 @@ elseif (!empty($_SERVER['REMOTE_ADDR'])) { $client_ip_address = $_SERVER['REMOTE
 
 function interpret_command_with_chatgpt($text_to_interpret) {
     global $chatgpt_raw_response_for_debug;
-    error_log("DEBUG_CHATGPT: Texto: '" . $text_to_interpret . "'");
-    if (empty(OPENAI_API_KEY) || strpos(OPENAI_API_KEY, 'sk-TU_API_KEY') === 0 || strlen(OPENAI_API_KEY) < 30) { error_log("DEBUG_CHATGPT: API Key Inválida/Placeholder"); return "chatgpt_error"; }
+    error_log("DEBUG_CHATGPT: Iniciando con: '" . $text_to_interpret . "'");
+    if (empty(OPENAI_API_KEY) || OPENAI_API_KEY === 'sk-TU_API_KEY_REAL_Y_VALIDA_DE_OPENAI' || strpos(OPENAI_API_KEY, 'sk-xxxxxxxxxx') === 0 || strlen(OPENAI_API_KEY) < 30) { // Placeholder check
+        error_log("DEBUG_CHATGPT: API Key Inválida/Placeholder. Longitud: " . strlen(OPENAI_API_KEY));
+        return "chatgpt_error";
+    }
     error_log("DEBUG_CHATGPT: API Key OK.");
     $api_key = OPENAI_API_KEY; $url = 'https://api.openai.com/v1/chat/completions';
-    $prompt_message = "Comandos: avanzar, detener, retroceder, girarIzquierda, girarDerecha, salir, girar_derecha_90, girar_izquierda_90, girar_derecha_360, girar_izquierda_360. Extrae SOLO UNO de estos o 'None'. Frase: \"$text_to_interpret\"";
-    $data = ['model' => 'gpt-3.5-turbo', 'messages' => [['role' => 'system', 'content' => "Extraes una palabra clave de comando o 'None'. Formato: palabra_clave_o_None."], ['role' => 'user', 'content' => $prompt_message]], 'temperature' => 0.1, 'max_tokens' => 30];
+    $comandos_posibles_str = "'avanzar', 'detener', 'retroceder', 'girarIzquierda', 'girarDerecha', 'salir', 'girar_derecha_90', 'girar_izquierda_90', 'girar_derecha_360', 'girar_izquierda_360', 'avanzar_derecha', 'avanzar_izquierda', 'retroceder_derecha', 'retroceder_izquierda'";
+    $prompt_message = "Analiza la frase. Extrae SOLO UNA de estas acciones: " . $comandos_posibles_str . ". Ejemplos: 'avanza a la derecha' -> 'avanzar_derecha'; 'gira 90 grados a la derecha' -> 'girar_derecha_90'; 'gira a la derecha' (sin grados/diagonal) -> 'girarDerecha'. Responde ÚNICAMENTE la palabra clave o 'None'. Frase: \"$text_to_interpret\"";
+    $data = ['model' => 'gpt-3.5-turbo', 'messages' => [['role' => 'system', 'content' => "Extraes una palabra clave de (" . $comandos_posibles_str . ") o 'None'. Formato: palabra_clave_o_None."], ['role' => 'user', 'content' => $prompt_message]], 'temperature' => 0.1, 'max_tokens' => 35];
     $options = ['http' => ['header' => "Content-Type: application/json\r\nAuthorization: Bearer $api_key\r\n", 'method' => 'POST', 'content' => json_encode($data), 'ignore_errors' => true, 'timeout' => 20]];
     $context = stream_context_create($options);
     error_log("DEBUG_CHATGPT: Intentando file_get_contents a: " . $url);
@@ -59,9 +76,9 @@ function interpret_command_with_chatgpt($text_to_interpret) {
     if (isset($response_data_from_api['choices'][0]['message']['content'])) {
         $extracted_command_raw = trim($response_data_from_api['choices'][0]['message']['content']);
         $extracted_command = strtolower($extracted_command_raw);
-        $extracted_command = preg_replace('/[^a-z0-9_]/i', '', $extracted_command); // Permite guiones bajos
+        $extracted_command = preg_replace('/[^a-z0-9_]/i', '', $extracted_command);
         error_log("DEBUG_CHATGPT: Extraído(crudo): '" . $extracted_command_raw . "'. Limpio: '" . $extracted_command . "'");
-        $valid_chatgpt_keywords = ["avanzar", "detener", "retroceder", "girarizquierda", "girarderecha", "salir", "girar_derecha_90", "girar_izquierda_90", "girar_derecha_360", "girar_izquierda_360", "none"];
+        $valid_chatgpt_keywords = ["avanzar", "detener", "retroceder", "girarizquierda", "girarderecha", "salir", "girar_derecha_90", "girar_izquierda_90", "girar_derecha_360", "girar_izquierda_360", "avanzar_derecha", "avanzar_izquierda", "retroceder_derecha", "retroceder_izquierda", "none"];
         if (in_array($extracted_command, $valid_chatgpt_keywords, true)) { error_log("DEBUG_CHATGPT: Extraído válido: '" . $extracted_command . "'"); return $extracted_command; }
         error_log("DEBUG_CHATGPT: Extraído ('" . $extracted_command . "') NO es keyword. OpenAI Raw: " . $response_body); return "unknown_command";
     }

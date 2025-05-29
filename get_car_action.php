@@ -15,9 +15,11 @@ if (!$conn->set_charset("utf8mb4")) {
 
 $car_executable_commands = [
     'avanzar', 'detener', 'retroceder', 
-    'girarizquierda', 'girarderecha', // Giros continuos base
+    'girarizquierda', 'girarderecha',
     'girar_derecha_90', 'girar_izquierda_90',
-    'girar_derecha_360', 'girar_izquierda_360'
+    'girar_derecha_360', 'girar_izquierda_360',
+    'avanzar_derecha', 'avanzar_izquierda',
+    'retroceder_derecha', 'retroceder_izquierda'
 ];
 $car_executable_commands_sql_in = "'" . implode("','", $car_executable_commands) . "'";
 $sql = "SELECT name FROM iot_devices 
