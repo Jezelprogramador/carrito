@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controlador Web Carrito IoT</title>
+    <title>Controlador Web Carrito IoT Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>Controlador Web Carrito IoT</h1>
 
-        <h2>Comandos Directos:</h2>
+        <h2>Comandos Básicos:</h2>
         <div class="controls">
-            <button class="control-button" data-command="avanzar">Avanzar</button>
+            <button class="control-button" data-command="adelante">Adelante</button>
+            <button class="control-button" data-command="atras">Atrás</button>
             <button class="control-button" data-command="detener">Detener</button>
-            <button class="control-button" data-command="retroceder">Retroceder</button>
         </div>
         
-        <h3>Giros Continuos:</h3>
+        <h3>Vueltas en Arco (Adelante):</h3>
         <div class="controls">
-            <button class="control-button" data-command="girarizquierda">Girar Izquierda (Cont.)</button>
-            <button class="control-button" data-command="girarderecha">Girar Derecha (Cont.)</button>
+            <button class="control-button" data-command="v_ade_izq">Vuelta Adelante Izquierda</button>
+            <button class="control-button" data-command="v_ade_der">Vuelta Adelante Derecha</button>
+        </div>
+        <h3>Vueltas en Arco (Atrás):</h3>
+        <div class="controls">
+            <button class="control-button" data-command="v_atr_izq">Vuelta Atrás Izquierda</button>
+            <button class="control-button" data-command="v_atr_der">Vuelta Atrás Derecha</button>
         </div>
 
         <h3>Giros por Grados (Aproximados):</h3>
         <div class="controls">
-            <button class="control-button" data-command="girar_izquierda_90">Girar Izq. 90°</button>
-            <button class="control-button" data-command="girar_derecha_90">Girar Der. 90°</button>
+            <button class="control-button" data-command="g_90_izq">Giro 90° Izquierda</button>
+            <button class="control-button" data-command="g_90_der">Giro 90° Derecha</button>
         </div>
         <div class="controls">
-            <button class="control-button" data-command="girar_izquierda_360">Girar Izq. 360°</button>
-            <button class="control-button" data-command="girar_derecha_360">Girar Der. 360°</button>
+            <button class="control-button" data-command="g_360_izq">Giro 360° Izquierda</button>
+            <button class="control-button" data-command="g_360_der">Giro 360° Derecha</button>
         </div>
         
-        
-    
-     
-
         <div class="voice-control">
             <button id="btnStartListen">🎤 Empezar a Escuchar</button>
             <p>Estado: <span id="status">Inactivo</span></p>

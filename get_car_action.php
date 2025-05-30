@@ -6,20 +6,17 @@ header('Content-Type: text/plain');
 $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
 if ($conn->connect_error) {
     error_log("get_car_action.php - DB Connection Error: " . $conn->connect_error);
-    echo "detener";
-    exit;
+    echo "detener"; exit;
 }
 if (!$conn->set_charset("utf8mb4")) {
     error_log("get_car_action.php - Error charset: " . $conn->error);
 }
 
+// Comandos que el carro puede ejecutar (NO incluye 'salir')
 $car_executable_commands = [
-    'avanzar', 'detener', 'retroceder', 
-    'girarizquierda', 'girarderecha',
-    'girar_derecha_90', 'girar_izquierda_90',
-    'girar_derecha_360', 'girar_izquierda_360',
-    'avanzar_derecha', 'avanzar_izquierda',
-    'retroceder_derecha', 'retroceder_izquierda'
+    'adelante', 'atras', 'detener',
+    'v_ade_der', 'v_ade_izq', 'v_atr_der', 'v_atr_izq',
+    'g_90_der', 'g_90_izq', 'g_360_der', 'g_360_izq'
 ];
 $car_executable_commands_sql_in = "'" . implode("','", $car_executable_commands) . "'";
 $sql = "SELECT name FROM iot_devices 
