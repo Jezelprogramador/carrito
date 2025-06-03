@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendCommandToBackend(dataValue, type) {
         // ★★★ URL DEL BACKEND CON TU IP PÚBLICA DE EC2 ★★★
-        const backendUrl = 'https://3.89.60.55/carrito1/command.php'; 
+        const backendUrl = 'https://18.205.234.186/carrito1/command.php'; 
         
         const formData = new FormData();
         let consoleIdent = "- v_FINAL";
